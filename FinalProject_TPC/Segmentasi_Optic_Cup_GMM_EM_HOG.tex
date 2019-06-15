@@ -1,0 +1,108 @@
+\documentclass[]{IEEEphot}
+
+\jvol{xx}
+\jnum{xx}
+\jmonth{June}
+\pubyear{2009}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+
+\title{Segmentasi Optic Cup Menggunakan Multivariate Gaussian Mixture Model Classifier dan Histogram of Oriented Gradient Sebagai Feature Extractor}
+
+\author{Sudiro$^1$\footnote{$^1$First Author}, Muhammad Izzarrasyadi Wachid$^2$\footnote{$^2$Second Author},\\
+Hanung Adi Nugraha$^*$\footnote{$^*$First Advisor}, Eka Legya Frannita$^{**}$\footnote{$^{**}$Second Advisor}}
+
+\affil{Departemen Teknik Elektro dan Teknik Informatika\\ Fakultas Teknik, Universitas Gadjah Mada} 
+
+\maketitle
+
+\begin{abstract}
+\textbf{For more detail: github.com/sudiroeen} Maaf, selain karena training gagal, paper juga belum selesai, insyaaAlloh tetap akan kami selesaikan setlah deadline berlangsung\\
+
+\noindent Optic Cup dan Optic Disc merupakan organ bagian mata yang dapat dijadikan acuan untuk mengetahui kondisi pasien yang mengidap Glaucoma. Bidang image processing juga meluas pada bidang biomedik, seperti penerapan pada segmentasi Optic Disc, Optic Cup, serta juga dapat untuk organ tubuh yang lain. \\
+
+\noindent Pixel - pixel di bagian Optic Cup dan Optic Disc memiliki kecerahan yang tinggi dibandingkan pixel lain pada gambar mata pasien, hal ini dapat dimanfaatkan untuk melakukan segmentasi dengan menthreshold gambar dengan nilai yang tinggi. \\
+Segmentasi objek dengan metode thresholding bisa presisi untuk gambar mata yang daerah terangnya hanya pada Optic Cup, sehingga agar Optic Cup pada gambar mata dengan berbagai kondisi dapat disegmentasi dengan lebih robust, pemrosesan data tidak lagi dengan warna, namun dengan fitur objek yang diinginkan. \\
+
+\noindent Penulis menawarkan metode klasifier Multivariate Gaussian Mixture Model dengan fitur HOG (Histogram of Oriented Gradient) sebagai input dataset nya.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Optic Cup, Multivariate Gaussian Mixture Model, Histogram of Oriented Gradient
+\end{IEEEkeywords}
+
+\section{Pendahuluan}
+
+\noindent Optic Cup dan Optic Disc merupakan organ bagian mata yang dapat dijadikan acuan untuk mengetahui kondisi pasien yang mengidap Glaucoma. Bidang image processing juga meluas pada bidang biomedik, seperti penerapan pada segmentasi Optic Disc, Optic Cup, serta juga dapat untuk organ tubuh yang lain. \\
+
+\noindent Pixel - pixel di bagian Optic Cup dan Optic Disc memiliki kecerahan yang tinggi dibandingkan pixel lain pada gambar mata pasien, hal ini dapat dimanfaatkan untuk melakukan segmentasi dengan menthreshold gambar dengan nilai yang tinggi. \\
+
+\noindent Segmentasi objek dengan metode thresholding bisa presisi untuk gambar mata yang daerah terangnya hanya pada Optic Cup, sehingga agar Optic Cup pada gambar mata dengan berbagai kondisi dapat disegmentasi dengan lebih robust, pemrosesan data tidak lagi dengan warna, namun dengan fitur objek yang diinginkan. \\
+
+\noindent Penulis menawarkan metode klasifier Gaussian Mixture Model dengan fitur HOG (Histogram of Oriented Gradient) yang diambil dari crop objek dari dataset gambar foto mata.\\
+
+\noindent Alasan pemilihan penggunaan fitur HOG dibandingkan warna adalah, pada gambar mentah mata, terlihat jelas pada setiap Optic Cup (yang memiliki intensitas yang tinggi), selalu dilalui oleh pembuluh darah (yang memiliki intensitas yang cukup rendah dibandingkan Optic Cup).\\
+
+\noindent Kondisi ini cukup menyulitkan untuk proses segmentasi Optic Cup dengan threshold warna, saja, karena jika menggunakan kontur pun, kontur Optic Cup akan terbagi menjadi lebih kecil. Walaupun bisa digabungkan menjadi satu kontur, namun akan kesulitan saat eliminasi kontur terang, namun memiliki ukuran yang sama dengan kontur Optic Cup yang sudah terbagi - bagi tersebut.\\
+
+\noindent Berbeda dengan metode threshold warna, penggunaan fitur, justru menguntungkan dengan adanya pembuluh darah yang melintasi Optic Cup tersebut. Hal ini karena deteksi objek berbasis fitur berdasar pada penentuan karakteristik tiap objek yang ingin diklasifikasikan. \\
+Dengan adanya pembuluh darah yang melintasi Optic Cup, memberikan karakteristik perbedaan yang cukup signifikan dibandingkan objek - objek lain yang ada pada gambar mentah mata. Karakteristik ini yakni Optic Cup merupakan objek yang berbentuk lingkaran, serta memiliki intensitas yang mencolok dibanding pixel objek lainnya.\\
+
+\noindent Sehingga dapat dicari gradient antara objek Optic Cup terhadap objek sekelilingnya, sehingga diperoleh fitur lingkaran (atau setidaknya berupa kontur tertutup). Selain Optic Cup, dimungkinkan ada objek lain dengan intensitas yang tinggi, serta close contour. \\
+
+\noindent Namun objek lain tersebut, murni terang, tidak ada pembuluh darah yang melewatinya, sedangkan Optic Cup dilewati pembuluh darah, yang menambah kekhususan objek tersebut. Sehingga fitur Optic Cup secara kualitatif, dapat dideskripsikan sebagai objek lingkaran (atau pun close contour) yang dilewati bebearap pembuluh darah.\\
+
+\noindent Berikut adalah gambar mentah mata dengan objek terang lain, selain Optic Cup:\\
+
+\begin{center}
+\includegraphics[scale=0.1]{../SourceMataUtuh/mata_174.jpg}
+\end{center}
+
+\section{Pengumpulan Data}
+Langkah pengambilan dataset fitur dari gambar mentah, dilakukan secara manual dengan menglabeli gambar tersebut, seperti proses berikut
+\begin{center}
+\includegraphics[scale=0.2]{/home/udiro/Pictures/labeling.png}
+\end{center}
+
+\noindent Untuk tool labeling nya penulis buat secara manual dengan langkah - langkah, saat awal gambar mentah mata akan ditampilkan, kemudian dengan melabeli objek yang diinginkan, diperoleh gambar crop (sesuai yang ditampilkan frame "roi" pada gambar di atas.\\
+
+\noindent Dengan menekan tombol "s" pada keyboard, maka gambar crop tersebut akan disimpan, serta dilakukan ekstraksi fitur HOG, dan menyimpannya ke dalam file YAML. Sedangkan jika menekan tombol "d", selain dilakukan ekstraksi fitur HOG, juga frame akan menampilkan gambar selanjutnya pada folder dataset yang  digunakan.\\
+
+\noindent Adapun hasil ekstraksi fitur HOG tersebut berupa vektor dengan 3780 baris dengan 1 kolom. Mengenai proses ekstraksi fitur nya dijelaskan pada sub section setelah ini.\\
+
+\noindent Selain melabeli bagian Optic Cup, penulis juga melabeli objek lain, yang digunakan sebagai data pembanding untuk kluster yang lain (pada kasus ini ada 2 klaster), sebenanrnya yang dilabeli termasuk juga bagian Optic Disc, sehingga terlihat secara utuh close contour serta pembuluh darah yang melintasinya, tidak hanya Optic Cup.
+\section{Histogram Of Oriented Gradient}
+Histogram of Oriented Gradient (HOG) merupakan salah satu algoritma ekstraksi fitur dari suatu gambar objek berbasiskan gradient dari gambar yang diamati. Berikut adalah algoritma dari Histogram Of Oriented Gradient:\\
+Misalkan gambar hasil label berupa crop adalah seperti gambar di bawah berikut. Untuk mengekstrak fitur HOG dari gambar crop tersebut, berikut langkah nya
+
+\begin{center}
+\includegraphics[scale=0.5]{../datasetGMM/images/dataset_804.jpg}
+\end{center}
+
+\noindent Dari gambar di atas ini, dibagi menjadi 8 sub gambar mendatar dan 16 sub gambar menurun, dengan masing - masing sub gambar terdiri dari 24x12 pixel (pada algoritma aslinya, terdiri dari 8x8 pixel), kemudian pada masing - masing sub pixel tersebut dicari nilai gradient horizontal dan gradient vertical nya.\\
+
+\noindent Dari gradient horizontal (gX) dan gradient bvertical (gY), kemudian dihitung magnitude (magGrad) serta fase (faseGrad) nya, dengan formula berikut:
+\begin{center}
+$magGrad = ||G|| = \sqrt{gX^2 + gY^2}$\\
+$faseGrad = \theta_{grad}  = \arctan{\frac{gY}{gX}}$
+\end{center}
+
+\section{Multivariate Gaussian Mixture Model}
+Gaussian Mixture Model (GMM) merupakan algoritma Machine Learning, yang termasuk kelas unsupervised learning, yakni dengan mengklusterisasi secara otomatis dataset yang ada, dengan sembarang nilai awal, hanya dengan menentukan banyaknya klaster yang diinginkan.\\
+Algoritma GMM ini berbasis pada distribusi gaussian dari keseluruhan dataset, dengan menghitung probability density function tiap data untuk tiap klaster, bobot tiap klaster terhadap keseluruhan klaster, serta bobot masing - masing data pada masing - masing klaster.\\
+Input dari klasifier GMM ini, hanya valid pada data yang terdistribusi normal, misalkan nilai raw pixel dari tiap frame, serta hasil dari extraksi fitur HOG. Tidak semua fitur bersifat Gaussian, misalkan LBP (Local Binary Pattern) yang tidak terdistribusi Gaussian.\\
+\section{Experimental Details}
+
+\section*{Acknowledgements}
+The authors wish to thank the anonymous reviewers for their valuable suggestions.  
+
+\bibliographystyle{IEEEtran}
+\bibliography{thesis}
+
+
+
+\end{document}
+
