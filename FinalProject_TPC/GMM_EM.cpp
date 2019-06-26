@@ -312,3 +312,52 @@ int GMM::predict(const Mat& datum_){
 #endif
 }
 
+/*
+	TODO:
+	1. lengkapi semua fitur
+	2. ubah more efficient
+
+	#DATASET
+		# Collect
+			stride -> float, perbandingan antara ukuran image, dengan ukuran crop window
+
+			a. crop di luar, extract HOG di luar
+				@ bisa gambar
+				@ bisa fitur
+			b. input frame, crop langsung
+				-> resizer
+				-> ukuran window kernel, X dan Y
+				-> stride X dan Y
+				-> batas banyak dataset
+
+				@ untuk warna, tanpa ukuran window, stride bisa
+			c. input folder berisi banyak foto
+				-> resizer
+				-> ukuran window kernel, X dan Y
+				-> stride X dan Y
+				-> batas banyak dataset
+
+				@ untuk warna, tanpa ukuran window, stride bisa
+			d. input video
+				-> resizer
+				-> stride Frame
+				-> ukuran window kernel, X dan Y
+				-> stride X dan Y
+				-> batas banyak dataset
+
+				@ untuk warna, tanpa ukuran window, stride bisa
+			e. input folder berisi beberapa video
+				-> resizer
+				-> stride Frame
+				-> ukuran window kernel, X, dan Y
+				-> stride X dan Y
+				-> batas banyak dataset
+
+				@ untuk warna, tanpa ukuran window, stride bisa
+	#Predict
+		$ Offline
+			-> hanya valid untuk warna
+
+			-> memakai LookUpTable
+		$ Online
+*/
