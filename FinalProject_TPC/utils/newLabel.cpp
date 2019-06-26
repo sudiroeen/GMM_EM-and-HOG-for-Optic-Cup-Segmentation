@@ -63,9 +63,9 @@ string SourceMataUtuh = "../SourceMataUtuh/";
 string DirOfCropped = "../datasetGMM/";
 
 int main(){
-  int count  = 750;
+  int count  = 0;
 
-	for(int i=160; i<190; i++){
+	for(int i=0; i<190; i++){
 		stringstream ss;
 		ss << "../SourceMataUtuh/mata_" << i << ".jpg";
 
