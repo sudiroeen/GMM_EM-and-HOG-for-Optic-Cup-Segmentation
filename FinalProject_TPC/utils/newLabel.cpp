@@ -4,9 +4,6 @@
   (1) Sudiro 
        [at] SudiroEEN@gmail.com
 
-  (2) M Izzarrasyadi Wachid
-       [at] izzarrasyadi@gmail.com
-
 */
 
 #include <opencv2/opencv.hpp>
